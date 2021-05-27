@@ -1,0 +1,70 @@
+import json
+import seaborn as sns
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render
+from django.http import JsonResponse
+
+from .models import Props
+
+# Some globals
+labels = {"mwkda" : "protein size (kDa)",
+          "ncd1000" : "net charge density x 1000 (eÅ-2)",
+          "fcharged" : "charged residues fraction",
+          "NetCh" : "net charge",
+          "SASAmiller" : "solvent accessible surface area (Miller)",
+          "fFatty" : "fraction hydrophobic",
+          "GC" : "G+C content %",
+          "fPos" : "fraction positive",
+          "fNeg" : "fraction negative",
+          "seqnum" : "protein count"
+          }
+palette = sns.color_palette('tab10', 10).as_hex()
+
+def index(request):
+    return render(request, "explore/home.html")
+
+
+
+# Serve data
+def take_subset(request):
+    """Interpret POST query and retrieve data from DB"""
+    if request.method != "POST":
+        return JsonResponse({"message" : 'POST method required'}, status = 403)
+
+    else:
+        # extract info from request
+        data = json.loads(request.body)
+        varx = data['varx']
+        vary = data['vary']
+        traceCount = int(data['traceCount'])
+        rank = data['rank']
+        value = data['value']
+        if rank == "kingdom" and value == "all":
+            # null query to start chart
+            matches  = [item.serialize() for item in Props.objects.all()]
+            color = "lightgray"
+        else:
+            # make query to DB
+            myFilter = {rank : value}
+            matches  = [item.serialize() for item in Props.objects.filter(**myFilter).all()]
+            # choose a color
+            color = palette[traceCount - 1]
+
+        # format a dataset for chart.js
+        dataset = {
+                    "data" : [{"x" : item[varx], "y" : item[vary]} for item in matches],
+                    "label" : f"{value} (N = {len(matches)})",
+                    "pointBorderColor" : "white",
+                    "order" : 20 - traceCount,
+                    "backgroundColor" : color,
+                    "borderColor" : "white",
+                    # extra fields - not for chart.js
+                    "rank" : rank,
+                    "value" : value,
+                  }
+        response = {
+                    "dataset" : dataset,
+                    "axislabels" : {"x" : labels[varx], "y" : labels[vary]},
+                   }
+
+        return JsonResponse(response, status = 200)

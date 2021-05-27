@@ -1,0 +1,120 @@
+{% extends "explore/layout.html" %}
+{% load static %}
+{% csrf_token %}
+
+{% block body %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.0/chart.min.js" integrity="sha512-yadYcDSJyQExcKhjKSQOkBKy2BLDoW6WnnGXCAkCoRlpHGpYuVuBqGObf3g/TdB86sSbss1AOP4YlGSb6EKQPg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<!-- <script type="text/javascript" src="{% static 'explore/chartjs-plugin-colorschemes.js' %}"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+<script src="{% static 'explore/main.js' %}"></script>
+
+<!-- Page header and links -->
+<div class="row  boxed">
+    <div class="col-sm-8 text-left" >
+        <div class="headerTitle">Physicochemical coordinates of cellular organisms</div>
+        <div class="headerSubTitle">Data explorer</div>
+    </div>
+    <div class="col-md text-right">
+        <a href="#">Log out</a>
+    </div>
+</div>
+<div class="row">
+    <!-- Canvas with the scatter -->
+    <div class="col boxed justify-content-center d-flex text-center">
+        <canvas width="700" height="600" id="myChart"></canvas>
+    </div>
+
+    <div style="padding:8px"></div>
+    <!-- Right side menu, choose variables -->
+    <div class="col-md boxed">
+        <form>
+            <div class="headerTitle">Choose variables</div>
+            <label class="headerSubTitle" for="x-axis">X-axis</label>
+            <select class="form-control" id="x-choose">
+                <option value="GC">GC content</option>
+                <option selected value="ncd1000">net charge density</option>
+                <option value="mwkda">protein size</option>
+
+            </select>
+
+            <label for="xAxes-log">log x</label>
+            <input type="checkbox" id="x-log">
+
+            <br>
+            <label class="headerSubTitle" for="y-axis">Y-axis</label>
+            <select class="form-control" id="y-choose">
+                <option value="GC">GC content</option>
+                <option value="ncd1000">net charge density</option>
+                <option selected value="mwkda">protein size</option>
+            </select>
+            <label for="yAxes-log">log y</label>
+            <input type="checkbox" id="y-log">
+        </form>
+
+    </div>
+
+</div>
+<!-- Bottom menu navigate lineage -->
+<div class="row boxed">
+  <div class="col-md">
+      <div class="headerTitle">Select organism by lineage</div>
+      <table id="highlight-menus" width="100%">
+          <tr class="headerSubTitle">
+              <th>Kingdom</th>
+              <th>Phylum</th>
+              <th>Class</th>
+              <th>Order</th>
+              <th>Family</th>
+              <th>Genus</th>
+          </tr>
+          <tr>
+            <td>
+                <select class="form-control choose" id = "choose-kingdom-1">
+                    <option id="op-Bacteria" value="Bacteria,kingdom">Bacteria (N = 13799)</option>
+                    <option id="op-Eukaryota" value="Eukaryota,kingdom">Eukaryota (N = 2036)</option>
+                    <option id="op-Archaea" value="Archaea,kingdom">Archaea (N = 2239)</option>
+                    <option selected disabled value="All organisms">All organisms (N = 18110)</option>
+                </select>
+            </td>
+            <td>
+                <select class="form-control choose" id = "choose-phylum-1">
+                    <option value="placeholder" selected disabled hidden>Choose here</option>
+                </select>
+            </td>
+            <td>
+                <select class="form-control choose" id = "choose-class-1">
+                    <option value="placeholder" selected disabled hidden>Choose here</option>
+                </select>
+            </td>
+            <td>
+                <select class="form-control choose" id = "choose-order-1">
+                    <option value="placeholder" selected disabled hidden>Choose here</option>
+                </select>
+            </td>
+            <td>
+                <select class="form-control choose" id = "choose-family-1">
+                    <option value="placeholder" selected disabled hidden>Choose here</option>
+                </select>
+            </td>
+            <td>
+                <select class="form-control choose" id = "choose-genus-1">
+                    <option value="placeholder" selected disabled hidden>Choose here</option>
+                </select>
+            </td>
+          </tr>
+
+      </table>
+      <a href="#" id="add-highlight">+Add highlight</a>
+      <br>
+      <div class="text-right">
+          <label for="reset">Clear all highlights</label>
+          <button type="button" name="button" id="reset" class="btn btn-primary">Reset</button>
+      </div>
+  </div>
+</div>
+
+
+
+{% endblock %}
