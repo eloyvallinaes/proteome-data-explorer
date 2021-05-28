@@ -1,11 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById("x-log").onclick = varlog;
     document.getElementById("y-log").onclick = varlog;
-    document.getElementById("x-choose").onchange = varchange;
     document.getElementById("y-choose").onchange = varchange;
+    document.getElementById("x-choose").onchange = varchange;
 
+    document.querySelectorAll(".choose").forEach((dropdown) => {
+        dropdown.addEventListener('change', show_options);
+        dropdown.addEventListener('change', add_highlight);
 
-
+    });
     chart_init();
 } );
 
@@ -31,7 +34,6 @@ function chart_init() {
              };
          })
          .then( content => {
-                console.log(content.axislabels)
                 var ctx = document.getElementById("myChart");
                 // create the chart using the chart canvas
                 var myChart = new Chart(ctx, {
@@ -56,31 +58,28 @@ function chart_init() {
                                 },
                                 plugins : {
                                     tooltip : {
-                                        enabled: false,
+                                                enabled: false,
 
-                                    },
-
-                                },
-
-                    }
+                                              },
+                                          },
+                            },
                 });
-            }
-    );
+            });
 };
 
 
 // Request dataset from backend, add to datasets
-function add_trace(varx, vary, rank, value) {
+function add_trace(varx, vary, rank, value, idx) {
     let csrftoken = Cookies.get('csrftoken')
     // Recover chart instance
     var myChart = Chart.getChart("myChart");
     var datasets = myChart.data.datasets;
-    fetch('/take_subset/', {
+    return fetch('/take_subset/', {
                             method : "POST",
                             body : JSON.stringify({
                                                     varx : varx,
                                                     vary : vary,
-                                                    traceCount : 1,
+                                                    traceCount : idx,
                                                     rank : rank,
                                                     value : value,
                                                 }),
@@ -95,10 +94,11 @@ function add_trace(varx, vary, rank, value) {
              };
          })
          .then( content => {
-             datasets.push(content.dataset);
-             myChart.update();
+             datasets[idx]=content.dataset;
+             myChart.options.scales.x.title.text = content.axislabels.x;
+             myChart.options.scales.y.title.text = content.axislabels.y;
          });
-
+    return true
 };
 
 
@@ -119,14 +119,94 @@ function varlog(event) {
 // Update plot when value of variable dropdowns changes
 function varchange() {
     var myChart = Chart.getChart("myChart");
-    var datasets = myChart.data.datasets;
+    var datasets = myChart.data.datasets
     myChart.data.datasets = [];
-    var varx = document.getElementById("x-choose").value
-    var vary = document.getElementById("y-choose").value
-    datasets.forEach( (dataset) => {
-        add_trace(varx, vary, dataset.rank, dataset.value)
+    var varx = document.getElementById("x-choose").value;
+    var vary = document.getElementById("y-choose").value;
+    processed = 0
+    datasets.forEach( (dataset, idx, arr) => {
+        add_trace(varx, vary, dataset.rank, dataset.value, idx)
+        .then(() => { if (processed === arr.length - 1) {
+                    myChart.update()
+                } else {
+                    processed++
+                };
+        });
+
     })
+
 };
+
+
+function show_options(event) {
+    console.log(event.target.id)
+    var ranks = ["kingdom", "phylum", "taxClass", "order", "family", "genus", "species"]
+    var rank = event.target.id.split("-")[0]
+    if (rank === "genus") {
+        return false
+    } else {
+        var rowno = event.target.id.split("-")[1]
+        var lowerRank = ranks[ ranks.indexOf(rank) + 1]
+        var value = event.target.value
+        let csrftoken = Cookies.get('csrftoken');
+        fetch("/options/", {
+            method: "POST",
+            body: JSON.stringify({
+                'rank' : rank,
+                'value' : value
+            }),
+            credentials : "include",
+            headers : {"X-CSRFToken" : csrftoken}
+        }).then( function(response) {
+            if (response.ok === true) {
+                return response.json()
+            } else {
+                console.log("error");
+            };
+        }).then( content => {
+            var dropdown = document.getElementById(`${lowerRank}-${rowno}`);
+            var placeholder = makePlaceholder();
+            // remove all previous options, add placeholder
+            Array.from(dropdown.children).forEach((child) => {child.remove()})
+            dropdown.appendChild(placeholder);
+            // add new options served by backend
+            content.forEach(option => {
+                var op = document.createElement("option");
+                op.value = option.name;
+                op.innerHTML = `${option.name} (N = ${option.count})`;
+                dropdown.appendChild(op);
+            });
+        });
+    };
+
+};
+
+
+function makePlaceholder() {
+    var placeholder = document.createElement('option');
+    placeholder.value = "placeholder";
+    placeholder.innerHTML = "Choose here";
+    placeholder.setAttribute('selected', true);
+    placeholder.setAttribute('disabled', true);
+    placeholder.setAttribute('hidden', true);
+
+    return placeholder;
+};
+
+
+function add_highlight(event) {
+    var rank = event.target.id.split("-")[0];
+    var rowno = event.target.id.split("-")[1];
+    var value = event.target.value;
+    var varx = document.getElementById("x-choose").value;
+    var vary = document.getElementById("y-choose").value;
+    // Recover chart instance
+    var myChart = Chart.getChart("myChart");
+    var datasets = myChart.data.datasets;
+    add_trace(varx, vary, rank, value, rowno)
+    .then(() => { myChart.update() });
+};
+
 
 // function bind_dropdowns() {
 //   // Bind functions to dropdowns

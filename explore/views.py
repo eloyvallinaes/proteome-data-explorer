@@ -9,7 +9,7 @@ from .models import Props
 # Some globals
 labels = {"mwkda" : "protein size (kDa)",
           "ncd1000" : "net charge density x 1000 (eÅ-2)",
-          "fcharged" : "charged residues fraction",
+          "fCharged" : "charged residues fraction",
           "NetCh" : "net charge",
           "SASAmiller" : "solvent accessible surface area (Miller)",
           "fFatty" : "fraction hydrophobic",
@@ -61,6 +61,7 @@ def take_subset(request):
                     # extra fields - not for chart.js
                     "rank" : rank,
                     "value" : value,
+                    "rowno" : traceCount,
                   }
         response = {
                     "dataset" : dataset,
@@ -68,3 +69,27 @@ def take_subset(request):
                    }
 
         return JsonResponse(response, status = 200)
+
+
+
+def find_options(request):
+    ranks = ["kingdom", "phylum", "taxClass", "order", "family", "genus", "species"]
+    if request.method != "POST":
+        return JsonResponse({"message" : 'POST method required'}, status = 403)
+    else:
+        data  = json.loads(request.body)
+        rank  = data['rank']
+        value = data['value']
+        myFilter = {rank : value}
+        lowerRank = ranks[ranks.index(rank) + 1]
+        options = set([item.serialize()[lowerRank] for item in Props.objects.filter(**myFilter)])
+        if None in options:
+            options.remove(None)
+
+        counts = [len( Props.objects.filter(**{lowerRank : option}) ) for option in options]
+
+        response = [{"name" : option, "count" : count} for option, count in zip(options, counts)]
+
+        response = sorted(response, key = lambda item: item["count"], reverse = True)
+
+        return JsonResponse(response, safe = False, status = 200)

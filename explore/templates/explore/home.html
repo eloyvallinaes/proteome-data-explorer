@@ -11,102 +11,124 @@
 <script src="{% static 'explore/main.js' %}"></script>
 
 <!-- Page header and links -->
-<div class="row  boxed">
-    <div class="col-sm-8 text-left" >
+<div class="row">
+    <div class="col-sm-8 text-left">
         <div class="headerTitle">Physicochemical coordinates of cellular organisms</div>
         <div class="headerSubTitle">Data explorer</div>
     </div>
     <div class="col-md text-right">
         <a href="#">Log out</a>
     </div>
+
 </div>
-<div class="row">
+<div class="row d-flex justify-content-between">
     <!-- Canvas with the scatter -->
-    <div class="col boxed justify-content-center d-flex text-center">
-        <canvas width="700" height="600" id="myChart"></canvas>
+    <div class="col justify-content-center d-flex text-center">
+        <div>
+            <canvas width="700" height="600" id="myChart"></canvas>
+        </div>
+
     </div>
 
-    <div style="padding:8px"></div>
     <!-- Right side menu, choose variables -->
-    <div class="col-md boxed">
-        <form>
-            <div class="headerTitle">Choose variables</div>
-            <label class="headerSubTitle" for="x-axis">X-axis</label>
-            <select class="form-control" id="x-choose">
-                <option value="GC">GC content</option>
-                <option selected value="ncd1000">net charge density</option>
-                <option value="mwkda">protein size</option>
+    <div class="col-md">
+        <div>
+            <form>
+                <div class="headerTitle">Choose variables</div>
+                <label class="headerSubTitle" for="x-axis">X-axis</label>
+                <select class="form-control" id="x-choose">
+                    <option value="GC">GC content</option>
+                    <option selected value="ncd1000" >net charge density</option>
+                    <option value="mwkda" name"protein size (kDa)">protein size</option>
+                    <option value="SASAmiller" >solvent accessible surface area</option>
+                    <option value="NetCh" >net charge</option>
+                    <option value="fFatty" >fraction hydrophobic (FLIV)</option>
+                    <option value="fPos" >fraction positive (KR)</option>
+                    <option value="fNeg" >fraction negative (DE)</option>
+                    <option value="fCharged" >charged residue fraction</option>
+                    <option value="seqnum" >protein count</option>
+                    <option value="Length" >protein length</option>
 
-            </select>
+                </select>
 
-            <label for="xAxes-log">log x</label>
-            <input type="checkbox" id="x-log">
+                <label for="xAxes-log">log x</label>
+                <input type="checkbox" id="x-log">
 
-            <br>
-            <label class="headerSubTitle" for="y-axis">Y-axis</label>
-            <select class="form-control" id="y-choose">
-                <option value="GC">GC content</option>
-                <option value="ncd1000">net charge density</option>
-                <option selected value="mwkda">protein size</option>
-            </select>
-            <label for="yAxes-log">log y</label>
-            <input type="checkbox" id="y-log">
-        </form>
+                <br>
+                <label class="headerSubTitle" for="y-axis">Y-axis</label>
+                <select class="form-control" id="y-choose">
+                    <option value="GC" >GC content</option>
+                    <option value="ncd1000" >net charge density</option>
+                    <option selected value="mwkda" name"protein size (kDa)">protein size</option>
+                    <option value="SASAmiller" >solvent accessible surface area</option>
+                    <option value="NetCh" >net charge</option>
+                    <option value="fFatty" >fraction hydrophobic (FLIV)</option>
+                    <option value="fPos" >fraction positive (KR)</option>
+                    <option value="fNeg" >fraction negative (DE)</option>
+                    <option value="fCharged" >charged residue fraction</option>
+                    <option value="seqnum" >protein count</option>
+                    <option value="Length" >protein length</option>
+                </select>
+                <label for="yAxes-log">log y</label>
+                <input type="checkbox" id="y-log">
+            </form>
+        </div>
+
 
     </div>
 
 </div>
 <!-- Bottom menu navigate lineage -->
-<div class="row boxed">
+<div class="row">
   <div class="col-md">
       <div class="headerTitle">Select organism by lineage</div>
       <table id="highlight-menus" width="100%">
-          <tr class="headerSubTitle">
-              <th>Kingdom</th>
-              <th>Phylum</th>
-              <th>Class</th>
-              <th>Order</th>
-              <th>Family</th>
-              <th>Genus</th>
+          <tr class="headerSubTitle flex-d justify-content-between">
+              <th style="width: 16%">Kingdom</th>
+              <th style="width: 16%">Phylum</th>
+              <th style="width: 16%">Class</th>
+              <th style="width: 16%">Order</th>
+              <th style="width: 16%">Family</th>
+              <th style="width: 16%">Genus</th>
           </tr>
-          <tr>
+          <tr class="flex-d justify-content-between">
             <td>
-                <select class="form-control choose" id = "choose-kingdom-1">
-                    <option id="op-Bacteria" value="Bacteria,kingdom">Bacteria (N = 13799)</option>
-                    <option id="op-Eukaryota" value="Eukaryota,kingdom">Eukaryota (N = 2036)</option>
-                    <option id="op-Archaea" value="Archaea,kingdom">Archaea (N = 2239)</option>
+                <select class="form-control choose" id = "kingdom-1">
+                    <option id="op-Bacteria" value="Bacteria">Bacteria (N = 13799)</option>
+                    <option id="op-Eukaryota" value="Eukaryota">Eukaryota (N = 2036)</option>
+                    <option id="op-Archaea" value="Archaea">Archaea (N = 2239)</option>
                     <option selected disabled value="All organisms">All organisms (N = 18110)</option>
                 </select>
             </td>
             <td>
-                <select class="form-control choose" id = "choose-phylum-1">
+                <select class="form-control choose" id = "phylum-1">
                     <option value="placeholder" selected disabled hidden>Choose here</option>
                 </select>
             </td>
             <td>
-                <select class="form-control choose" id = "choose-class-1">
+                <select class="form-control choose" id = "taxClass-1">
                     <option value="placeholder" selected disabled hidden>Choose here</option>
                 </select>
             </td>
             <td>
-                <select class="form-control choose" id = "choose-order-1">
+                <select class="form-control choose" id = "order-1">
                     <option value="placeholder" selected disabled hidden>Choose here</option>
                 </select>
             </td>
             <td>
-                <select class="form-control choose" id = "choose-family-1">
+                <select class="form-control choose" id = "family-1">
                     <option value="placeholder" selected disabled hidden>Choose here</option>
                 </select>
             </td>
             <td>
-                <select class="form-control choose" id = "choose-genus-1">
+                <select class="form-control choose" id = "genus-1">
                     <option value="placeholder" selected disabled hidden>Choose here</option>
                 </select>
             </td>
           </tr>
 
       </table>
-      <a href="#" id="add-highlight">+Add highlight</a>
+      <button class="btn btn-link" id="add-highlight">+Add highlight</button>
       <br>
       <div class="text-right">
           <label for="reset">Clear all highlights</label>
