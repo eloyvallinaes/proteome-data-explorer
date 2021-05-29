@@ -40,6 +40,8 @@ function chart_init() {
                     type: 'scatter',
                     data: { datasets : [content.dataset]},
                     options: {
+                                responsive : true,
+                                resizeDelay: 1,
                                 animation : false,
                                 scales: {
                                     y: {

@@ -11,30 +11,28 @@
 <script src="{% static 'explore/main.js' %}"></script>
 
 <!-- Page header and links -->
-<div class="row">
-    <div class="col-sm-8 text-left">
-        <div class="headerTitle">Physicochemical coordinates of cellular organisms</div>
-        <div class="headerSubTitle">Data explorer</div>
-    </div>
-    <div class="col-md text-right">
-        <a href="#">Log out</a>
-    </div>
-
-</div>
 <div class="row d-flex justify-content-between">
-    <!-- Canvas with the scatter -->
-    <div class="col justify-content-center d-flex text-center">
-        <div>
-            <canvas width="700" height="600" id="myChart"></canvas>
+    <div class="col-12">
+        <div class="boxed">
+            <div class="col-sm-7 text-left">
+                <div class="headerTitle">Physicochemical coordinates of cellular organisms</div>
+                <div class="headerSubTitle">Data explorer</div>
+            </div>
+            <div class="col-md text-right">
+                <a href="#">Log out</a>
+            </div>
         </div>
 
     </div>
-
+    <!-- Canvas with the scatter -->
+    <div class="col-lg-8 col-md-7 d-flex justify-content-round">
+            <canvas width="720" height="480" class="boxed" id="myChart"></canvas>
+    </div>
     <!-- Right side menu, choose variables -->
-    <div class="col-md">
-        <div>
+    <div class="col-lg-4 col-md-5">
+        <div class="boxed">
             <form>
-                <div class="headerTitle">Choose variables</div>
+                <div class="sectionTitle">Choose variables</div>
                 <label class="headerSubTitle" for="x-axis">X-axis</label>
                 <select class="form-control" id="x-choose">
                     <option value="GC">GC content</option>
@@ -75,67 +73,70 @@
         </div>
 
 
+        </div>
+    <!-- Bottom menu navigate lineage -->
+    <div class="col-12">
+        <div class="boxed">
+            <div class="sectionTitle">Select organism by lineage</div>
+            <table id="highlight-menus" width="100%">
+                <tr class="headerSubTitle flex-d justify-content-between">
+                    <th style="width: 16%">Kingdom</th>
+                    <th style="width: 16%">Phylum</th>
+                    <th style="width: 16%">Class</th>
+                    <th style="width: 16%">Order</th>
+                    <th style="width: 16%">Family</th>
+                    <th style="width: 16%">Genus</th>
+                </tr>
+                <tr class="flex-d justify-content-between">
+                  <td>
+                      <select class="form-control choose" id = "kingdom-1">
+                          <option id="op-Bacteria" value="Bacteria">Bacteria (N = 13799)</option>
+                          <option id="op-Eukaryota" value="Eukaryota">Eukaryota (N = 2036)</option>
+                          <option id="op-Archaea" value="Archaea">Archaea (N = 2239)</option>
+                          <option selected disabled value="All organisms">All organisms (N = 18110)</option>
+                      </select>
+                  </td>
+                  <td>
+                      <select class="form-control choose" id = "phylum-1">
+                          <option value="placeholder" selected disabled hidden>Choose here</option>
+                      </select>
+                  </td>
+                  <td>
+                      <select class="form-control choose" id = "taxClass-1">
+                          <option value="placeholder" selected disabled hidden>Choose here</option>
+                      </select>
+                  </td>
+                  <td>
+                      <select class="form-control choose" id = "order-1">
+                          <option value="placeholder" selected disabled hidden>Choose here</option>
+                      </select>
+                  </td>
+                  <td>
+                      <select class="form-control choose" id = "family-1">
+                          <option value="placeholder" selected disabled hidden>Choose here</option>
+                      </select>
+                  </td>
+                  <td>
+                      <select class="form-control choose" id = "genus-1">
+                          <option value="placeholder" selected disabled hidden>Choose here</option>
+                      </select>
+                  </td>
+                </tr>
+
+            </table>
+            <button class="btn btn-link" id="add-highlight">+Add highlight</button>
+            <br>
+            <div class="text-right">
+                <label for="reset">Clear all highlights</label>
+                <button type="button" name="button" id="reset" class="btn btn-primary">Reset</button>
+            </div>
+        </div>
+
     </div>
 
 </div>
-<!-- Bottom menu navigate lineage -->
-<div class="row">
-  <div class="col-md">
-      <div class="headerTitle">Select organism by lineage</div>
-      <table id="highlight-menus" width="100%">
-          <tr class="headerSubTitle flex-d justify-content-between">
-              <th style="width: 16%">Kingdom</th>
-              <th style="width: 16%">Phylum</th>
-              <th style="width: 16%">Class</th>
-              <th style="width: 16%">Order</th>
-              <th style="width: 16%">Family</th>
-              <th style="width: 16%">Genus</th>
-          </tr>
-          <tr class="flex-d justify-content-between">
-            <td>
-                <select class="form-control choose" id = "kingdom-1">
-                    <option id="op-Bacteria" value="Bacteria">Bacteria (N = 13799)</option>
-                    <option id="op-Eukaryota" value="Eukaryota">Eukaryota (N = 2036)</option>
-                    <option id="op-Archaea" value="Archaea">Archaea (N = 2239)</option>
-                    <option selected disabled value="All organisms">All organisms (N = 18110)</option>
-                </select>
-            </td>
-            <td>
-                <select class="form-control choose" id = "phylum-1">
-                    <option value="placeholder" selected disabled hidden>Choose here</option>
-                </select>
-            </td>
-            <td>
-                <select class="form-control choose" id = "taxClass-1">
-                    <option value="placeholder" selected disabled hidden>Choose here</option>
-                </select>
-            </td>
-            <td>
-                <select class="form-control choose" id = "order-1">
-                    <option value="placeholder" selected disabled hidden>Choose here</option>
-                </select>
-            </td>
-            <td>
-                <select class="form-control choose" id = "family-1">
-                    <option value="placeholder" selected disabled hidden>Choose here</option>
-                </select>
-            </td>
-            <td>
-                <select class="form-control choose" id = "genus-1">
-                    <option value="placeholder" selected disabled hidden>Choose here</option>
-                </select>
-            </td>
-          </tr>
 
-      </table>
-      <button class="btn btn-link" id="add-highlight">+Add highlight</button>
-      <br>
-      <div class="text-right">
-          <label for="reset">Clear all highlights</label>
-          <button type="button" name="button" id="reset" class="btn btn-primary">Reset</button>
-      </div>
-  </div>
-</div>
+
 
 
 

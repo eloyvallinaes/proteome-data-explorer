@@ -9,15 +9,16 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <!-- My bespoke CSS -->
         <link rel="stylesheet" type="text/css" href="{% static 'explore/mystyles.css' %}">
-        <!-- JS -->
-        {% block scripts %}
-
-        {% endblock %}
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'explore/favicon_io/apple-touch-icon.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'explore/favicon_io/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'explore/favicon_io/favicon-16x16.png' %}">
+        <link rel="manifest" href="{% static 'explore/favicon_io/site.webmanifest' %}">
 
 
     </head>
     <body>
-        <nav class="navbar navbar-expand-sm navbar-dark">
+        <!-- <nav class="navbar navbar-expand-sm navbar-dark">
             <div>
                   <ul class="navbar-nav mr-auto">
                     <li id="nav-all" class="nav-item">
@@ -37,9 +38,9 @@
                     {% endif %}
                   </ul>
             </div>
-          </nav>
+          </nav> -->
 
-          <div class="container">
+          <div class="container-lg">
               {% block body %}
               {% endblock %}
           </div>

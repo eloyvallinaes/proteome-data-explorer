@@ -34,14 +34,32 @@ input {
     font-family: Playfair Display;
 }
 
+.sectionTitle {
+    color : #013480;
+    font-weight : bold;
+    font-size : 18px;
+    line-height: 22px;
+    font-family: Playfair Display;
+}
+
 .headerSubTitle {
     font-weight : bold;
     font-size : 16px;
-    line-height: 24px;
+    line-height: 22px;
     color : gray;
 }
 
-.row {
+.boxed {
     background-color: white;
     border: 1px solid lightgray;
+    margin-top : 0px;
+    margin-bottom : 6px;
+    margin-left: 4px;
+    margin-right: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 2.5px;
+    padding-bottom: 2.5px;
+
+
 }
