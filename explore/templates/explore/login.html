@@ -1,0 +1,47 @@
+{% extends "explore/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="row d-flex justify-content-center">
+        <div class="col-8">
+            <div class="col">
+                <div class="boxed">
+                    <div class="headerTitle">Physicochemical coordinates of cellular organisms</div>
+                    <div class="headerSubTitle">Data explorer</div>
+                </div>
+            </div>
+
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                <div class="boxed d-flex align-items-center justify-content-center" style="width: 100%;">
+                    <div class="col-8 d-flex align-items-center justify-content-center">
+                        <form action="{% url 'login' %}" method="post" style="padding-top : 5px;">
+                            {% csrf_token %}
+                            <div class="sectionTitle" style="width: 100%;">
+                                Please log in
+                            </div>
+                            <div class="form-row align-items-center">
+                                <!-- <label for="username">Username</label> -->
+                                <input class="form-control" type="text" name="username" placeholder="Username">
+                            </div>
+                            <div class="form-row align-items-center">
+                                <!-- <label for="password">Password</label> -->
+                               <input class="form-control" type="password" name="password" placeholder="Password">
+                            </div>
+                            <div class="form-row align-items-center justify-content-end">
+                                <button type="submit" class="btn btn-primary">Log in</button>
+                            </div>
+                         </form>
+                    </div>
+
+
+                 </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+{% endblock %}

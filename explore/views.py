@@ -2,7 +2,8 @@ import json
 import seaborn as sns
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
+from django.urls import reverse
 
 from .models import Props
 
@@ -20,8 +21,13 @@ labels = {"mwkda" : "protein size (kDa)",
           }
 palette = sns.color_palette('tab10', 10).as_hex()
 
+
 def index(request):
-    return render(request, "explore/home.html")
+    user = request.user
+    if user.is_authenticated:
+        return render(request, "explore/home.html")
+    else:
+        return render(request, "explore/login.html")
 
 
 
@@ -92,3 +98,75 @@ def find_options(request):
         response = sorted(response, key = lambda item: item["count"], reverse = True)
 
         return JsonResponse(response, safe = False, status = 200)
+
+
+def taxa_search(request):
+    ranks = ["kingdom", "phylum", "taxClass", "order", "family", "genus", "species"]
+    query = request.GET.get("q")
+    # querying for names starting with the query at any tax level (case insensitive)
+    myFilter = {rank + "__istartswith" : query for rank in ranks}
+    # matching records in the table
+    matches = Props.objects.filter(**myFilter).all()
+    # possibilities
+    possibilities = {}
+    for rank in ranks:
+        rankMatches = list(set([match.serialize()[rank] for match in matches]))
+        possibilities[rank] = rankMatches
+
+    return JsonResponse(possibilities, safe=True)
+
+
+############################## Authentication ##################################
+
+def login_view(request):
+    if request.method == "POST":
+
+        # Attempt to sign user in
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+
+        # Check if authentication successful
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return render(request, "explore/login.html", {
+                "message": "Invalid username and/or password."
+            })
+    else:
+        return render(request, "explore/login.html")
+
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("index"))
+
+
+# def register(request):
+#     if request.method == "POST":
+#         username = request.POST["username"]
+#         email = request.POST["email"]
+#
+#         # Ensure password matches confirmation
+#         password = request.POST["password"]
+#         confirmation = request.POST["confirmation"]
+#         if password != confirmation:
+#             return render(request, "network/register.html", {
+#                 "message": "Passwords must match."
+#             })
+#
+#         # Attempt to create new user and corresponding profile
+#         try:
+#             user = User.objects.create_user(username, email, password)
+#             user.save()
+#             profile = Profile(user = user)
+#             profile.save()
+#         except IntegrityError:
+#             return render(request, "network/register.html", {
+#                 "message": "Username already taken."
+#             })
+#         login(request, user)
+#         return HttpResponseRedirect(reverse("index"))
+#     else:
+#         return render(request, "network/register.html")
