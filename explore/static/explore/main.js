@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
         dropdown.addEventListener('change', add_highlight);
 
     });
+
+    document.getElementById("add-highlight-dialog").onclick = add_highlight_dialog;
     chart_init();
 } );
 
@@ -19,7 +21,7 @@ function chart_init() {
                             body : JSON.stringify({
                                                     varx : "ncd1000",
                                                     vary : "mwkda",
-                                                    traceCount : 0,
+                                                    pos  : 0,
                                                     rank : "kingdom",
                                                     value : "all",
                                                 }),
@@ -70,7 +72,8 @@ function chart_init() {
 };
 
 
-// Request dataset from backend, add to datasets
+// Request dataset from backend, add to datasets;
+// idx is the index of Chart.datasets, where the new trace is being inserted
 function add_trace(varx, vary, rank, value, idx) {
     let csrftoken = Cookies.get('csrftoken')
     // Recover chart instance
@@ -81,7 +84,7 @@ function add_trace(varx, vary, rank, value, idx) {
                             body : JSON.stringify({
                                                     varx : varx,
                                                     vary : vary,
-                                                    traceCount : idx,
+                                                    pos  : idx,
                                                     rank : rank,
                                                     value : value,
                                                 }),
@@ -198,16 +201,49 @@ function makePlaceholder() {
 
 function add_highlight(event) {
     var rank = event.target.id.split("-")[0];
-    var rowno = event.target.id.split("-")[1];
+    // Including header, table initially has 2 rows while Chart has 1 dataset
+    var pos = parseInt(event.target.id.split("-")[1]);
     var value = event.target.value;
     var varx = document.getElementById("x-choose").value;
     var vary = document.getElementById("y-choose").value;
     // Recover chart instance
     var myChart = Chart.getChart("myChart");
     var datasets = myChart.data.datasets;
-    add_trace(varx, vary, rank, value, rowno)
+    add_trace(varx, vary, rank, value, pos)
     .then(() => { myChart.update() });
 };
+
+
+// Add highlight dialog
+function add_highlight_dialog(event) {
+    event.preventDefault(); // prevent page from scrolling up
+    var table = document.getElementById("highlight-menus");
+    let i = table.rows.length;
+    var nextRow = table.insertRow(table.rows.length);
+    var rowModel = document.getElementById("rowmodel").cloneNode(deep = true);
+    rowModel.setAttribute("id", "")
+    Array.from(rowModel.children).forEach((column) => {
+        var dropdown = column.getElementsByTagName("select")[0];
+        let newId = dropdown.id.split("-")[0] + "-" + i;
+        dropdown.setAttribute("id", newId);
+    });
+    nextRow.innerHTML = rowModel.innerHTML;
+    document.querySelectorAll(".choose").forEach((dropdown) => {
+        dropdown.addEventListener('change', show_options);
+        dropdown.addEventListener('change', add_highlight);
+
+    });
+
+};
+
+
+//     var rowmodel = Handlebars.compile(document.getElementById("rowmodel").innerHTML);
+//     nextrow.innerHTML = rowmodel({"i" : i});
+//     // Add options
+//     show_options(name = "all", rank = "kingdom", id = i);
+//     // Add the event listeners
+//     bind_dropdowns()
+// };
 
 
 // function bind_dropdowns() {
@@ -340,17 +376,4 @@ function add_highlight(event) {
 //             document.querySelector("#choose-y").children[1].selected = true;
 //         }
 //         request.send();
-//     };
-//     // Add highlight dialog
-//     function add_highlight(event) {
-//         event.preventDefault(); // prevent page from scrolling up
-//         var table = document.getElementById("highlight-menus");
-//         i = table.rows.length;
-//         var nextrow = table.insertRow();
-//         var rowmodel = Handlebars.compile(document.getElementById("rowmodel").innerHTML);
-//         nextrow.innerHTML = rowmodel({"i" : i});
-//         // Add options
-//         show_options(name = "all", rank = "kingdom", id = i);
-//         // Add the event listeners
-//         bind_dropdowns()
 //     };
