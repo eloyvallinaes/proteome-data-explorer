@@ -6,6 +6,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 
 from .models import Props
+from django.db.models import Q
 
 # Some globals
 labels = {"mwkda" : "protein size (kDa)",
@@ -101,19 +102,22 @@ def find_options(request):
 
 
 def taxa_search(request):
-    ranks = ["kingdom", "phylum", "taxClass", "order", "family", "genus", "species"]
+    ranks = ["phylum", "taxClass", "order", "family", "genus", "species"]
     query = request.GET.get("q")
-    # querying for names starting with the query at any tax level (case insensitive)
-    myFilter = {rank + "__istartswith" : query for rank in ranks}
-    # matching records in the table
-    matches = Props.objects.filter(**myFilter).all()
-    # possibilities
-    possibilities = {}
+    p = Props.objects.all()
+    allOps = []
     for rank in ranks:
-        rankMatches = list(set([match.serialize()[rank] for match in matches]))
-        possibilities[rank] = rankMatches
+        myFilter = {rank + "__icontains" : query}
+        matches = p.filter(**myFilter)
+        for match in matches:
+            value = match.serialize()[rank]
+            kingdom = match.serialize()["kingdom"]
+            allOps.append((rank , value, kingdom))
 
-    return JsonResponse(possibilities, safe=True)
+        uniqueOps = list(set(allOps))
+        uniqueOpsJson = [{"rank" : r, "value" : v, "kingdom" : k} for r, v, k in uniqueOps]
+
+    return JsonResponse(uniqueOpsJson[:10], safe=False, status = 200)
 
 
 ############################## Authentication ##################################

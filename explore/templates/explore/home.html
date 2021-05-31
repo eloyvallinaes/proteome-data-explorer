@@ -8,13 +8,16 @@
 
 <!-- <script type="text/javascript" src="{% static 'explore/chartjs-plugin-colorschemes.js' %}"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+<script src="{% static 'explore/jquery-3.6.0.js' %}"></script>
 <script src="{% static 'explore/main.js' %}"></script>
 
-<!-- Page header and links -->
-<div class="row d-flex justify-content-between">
-    <div class="col-12">
+</script>
+
+<div class="row d-flex justify-content-between mx-0">
+    <!-- Page header and links -->
+    <div class="col-12 px-0">
         <div class="boxed">
-            <div class="col-sm-7 text-left">
+            <div class="col-12 text-left">
                 <div class="headerTitle">Physicochemical coordinates of cellular organisms</div>
                 <div class="headerSubTitle">Data explorer</div>
             </div>
@@ -24,58 +27,81 @@
         </div>
 
     </div>
-    <!-- Canvas with the scatter -->
-    <div class="col-lg-8 col-md-7 d-flex justify-content-round">
-            <canvas width="720" height="480" class="boxed" id="myChart"></canvas>
+    <!-- Middle section: canvas & Var menu -->
+    <div class="col-12 d-flex justify-content-between px-0 mx-0">
+        <!-- Canvas with the scatter -->
+        <div class="col-lg-9 col-md-7 pl-0 mx-0 pr-2">
+                <canvas width="720" height="480" class="boxed" id="myChart"></canvas>
+        </div>
+        <!-- Right side menu, choose variables -->
+        <div class="col-lg-3 col-md-5 mx-0 px-0">
+            <div class="col-12 px-0">
+                <div class="boxed">
+                    <form>
+                        <div class="sectionTitle">Choose variables</div>
+                        <label class="headerSubTitle" for="x-axis">X-axis</label>
+                        <select class="form-control" id="x-choose">
+                            <option value="GC">GC content</option>
+                            <option selected value="ncd1000" >net charge density</option>
+                            <option value="mwkda" name"protein size (kDa)">protein size</option>
+                            <option value="SASAmiller" >solvent accessible surface area</option>
+                            <option value="NetCh" >net charge</option>
+                            <option value="fFatty" >fraction hydrophobic (FLIV)</option>
+                            <option value="fPos" >fraction positive (KR)</option>
+                            <option value="fNeg" >fraction negative (DE)</option>
+                            <option value="fCharged" >charged residue fraction</option>
+                            <option value="seqnum" >protein count</option>
+                            <option value="Length" >protein length</option>
+
+                        </select>
+
+                        <label for="xAxes-log">log x</label>
+                        <input type="checkbox" id="x-log">
+
+                        <br>
+                        <label class="headerSubTitle" for="y-axis">Y-axis</label>
+                        <select class="form-control" id="y-choose">
+                            <option value="GC" >GC content</option>
+                            <option value="ncd1000" >net charge density</option>
+                            <option selected value="mwkda" name"protein size (kDa)">protein size</option>
+                            <option value="SASAmiller" >solvent accessible surface area</option>
+                            <option value="NetCh" >net charge</option>
+                            <option value="fFatty" >fraction hydrophobic (FLIV)</option>
+                            <option value="fPos" >fraction positive (KR)</option>
+                            <option value="fNeg" >fraction negative (DE)</option>
+                            <option value="fCharged" >charged residue fraction</option>
+                            <option value="seqnum" >protein count</option>
+                            <option value="Length" >protein length</option>
+                        </select>
+                        <label for="yAxes-log">log y</label>
+                        <input type="checkbox" id="y-log">
+                    </form>
+                </div>
+
+            </div>
+            <div class="col-12 align-self-end mx-0 px-0">
+                <div class="boxed">
+                    <form autocomplete="off">
+                        <div class="form-group">
+                            <p class="sectionTitle" for="taxa-search">Taxa search</p>
+                            <i id="search-icon" class="fas fa-search"></i>
+                            <input type="text" list="taxa-options"class="form-control" id="taxa-search" placeholder="start typing">
+                            <datalist id="taxa-options">
+
+                            </datalist>
+                        </div>
+
+                    </form>
+                </div>
+
+
+          </div>
+
+
+        </div>
     </div>
-    <!-- Right side menu, choose variables -->
-    <div class="col-lg-4 col-md-5">
-        <div class="boxed">
-            <form>
-                <div class="sectionTitle">Choose variables</div>
-                <label class="headerSubTitle" for="x-axis">X-axis</label>
-                <select class="form-control" id="x-choose">
-                    <option value="GC">GC content</option>
-                    <option selected value="ncd1000" >net charge density</option>
-                    <option value="mwkda" name"protein size (kDa)">protein size</option>
-                    <option value="SASAmiller" >solvent accessible surface area</option>
-                    <option value="NetCh" >net charge</option>
-                    <option value="fFatty" >fraction hydrophobic (FLIV)</option>
-                    <option value="fPos" >fraction positive (KR)</option>
-                    <option value="fNeg" >fraction negative (DE)</option>
-                    <option value="fCharged" >charged residue fraction</option>
-                    <option value="seqnum" >protein count</option>
-                    <option value="Length" >protein length</option>
-
-                </select>
-
-                <label for="xAxes-log">log x</label>
-                <input type="checkbox" id="x-log">
-
-                <br>
-                <label class="headerSubTitle" for="y-axis">Y-axis</label>
-                <select class="form-control" id="y-choose">
-                    <option value="GC" >GC content</option>
-                    <option value="ncd1000" >net charge density</option>
-                    <option selected value="mwkda" name"protein size (kDa)">protein size</option>
-                    <option value="SASAmiller" >solvent accessible surface area</option>
-                    <option value="NetCh" >net charge</option>
-                    <option value="fFatty" >fraction hydrophobic (FLIV)</option>
-                    <option value="fPos" >fraction positive (KR)</option>
-                    <option value="fNeg" >fraction negative (DE)</option>
-                    <option value="fCharged" >charged residue fraction</option>
-                    <option value="seqnum" >protein count</option>
-                    <option value="Length" >protein length</option>
-                </select>
-                <label for="yAxes-log">log y</label>
-                <input type="checkbox" id="y-log">
-            </form>
-        </div>
-
-
-        </div>
     <!-- Bottom menu navigate lineage -->
-    <div class="col-12">
+    <div class="col-12 px-0">
         <div class="boxed">
             <div class="sectionTitle">Select organism by lineage</div>
             <table id="highlight-menus" width="100%">

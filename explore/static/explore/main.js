@@ -11,8 +11,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById("add-highlight-dialog").onclick = add_highlight_dialog;
+
+    // Search box action
+    let scheduled_function = false
+    $( "#taxa-search" ).on( "keyup", function () {
+        event.preventDefault();
+        console.log($(this).val())
+        if (scheduled_function) {
+                clearTimeout(scheduled_function)
+            }
+        // setTimeout returns the ID of the function to be executed
+        // syntax is setTimeout(function, delay in ms, parameter (the query))
+        scheduled_function = setTimeout(call_search_taxa, 1000, $(this).val())
+    });
+
+    // Create the chart with gray background scatter
     chart_init();
-} );
+});
 
 function chart_init() {
     let csrftoken = Cookies.get('csrftoken')
@@ -235,6 +250,22 @@ function add_highlight_dialog(event) {
     });
 
 };
+
+let call_search_taxa = function ( query ){
+    $.getJSON("/taxa/", {
+        q: query
+    }).done( response => {
+        $("#taxa-options").empty();
+        response.forEach( (item) => {
+            var op = document.createElement("option");
+            op.setAttribute("value", item["value"]);
+            op.setAttribute("rank", item["rank"]);
+            op.innerHTML = `${item["rank"]}: ${item["value"]} @ ${item["kingdom"]}`
+            $("#taxa-options").append(op);
+        })
+    })
+};
+
 
 
 //     var rowmodel = Handlebars.compile(document.getElementById("rowmodel").innerHTML);
