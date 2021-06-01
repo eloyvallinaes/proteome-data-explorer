@@ -31,7 +31,10 @@
     <div class="col-12 d-flex justify-content-between px-0 mx-0">
         <!-- Canvas with the scatter -->
         <div class="col-lg-9 col-md-7 pl-0 mx-0 pr-2">
-                <canvas width="720" height="480" class="boxed" id="myChart"></canvas>
+            <div class="boxed">
+                <canvas width="720" height="480" id="myChart"></canvas>
+                <div class="headerSubTitle d-flex justify-content-end">Hint: hide traces by clicking them on the legend</div>
+            </div>
         </div>
         <!-- Right side menu, choose variables -->
         <div class="col-lg-3 col-md-5 mx-0 px-0">
@@ -81,14 +84,16 @@
             </div>
             <div class="col-12 align-self-end mx-0 px-0">
                 <div class="boxed">
-                    <form autocomplete="off">
+                    <form autocomplete="off" onsubmit="return false">
                         <div class="form-group">
-                            <p class="sectionTitle" for="taxa-search">Taxa search</p>
-                            <i id="search-icon" class="fas fa-search"></i>
-                            <input type="text" list="taxa-options"class="form-control" id="taxa-search" placeholder="start typing">
-                            <datalist id="taxa-options">
+                            <span class="sectionTitle">Taxa search</span><br>
+                            <span class="headerSubTitle">Click to add subset highlight</span>
 
-                            </datalist>
+                            <i id="search-icon" class="fas fa-search"></i>
+                            <input type="search" list="taxa-options" class="form-control" id="taxa-search" placeholder="start typing">
+                            <div id="taxa-options" style="overflow-y: auto; max-height: 120px; width: 100%;" >
+
+                            </div>
                         </div>
 
                     </form>
@@ -113,7 +118,7 @@
                     <th style="width: 16%">Family</th>
                     <th style="width: 16%">Genus</th>
                 </tr>
-                <tr id="rowmodel" class="flex-d justify-content-between">
+                <tr id="rowmodel" class="flex-d justify-content-between" style="display: none;">
                   <td>
                       <select class="form-control choose" id = "kingdom-1">
                           <option id="op-Bacteria" value="Bacteria">Bacteria (N = 13799)</option>
@@ -148,7 +153,6 @@
                       </select>
                   </td>
                 </tr>
-
             </table>
             <button class="btn btn-link" id="add-highlight-dialog">+Add highlight</button>
             <br>

@@ -114,8 +114,14 @@ def taxa_search(request):
             kingdom = match.serialize()["kingdom"]
             allOps.append((rank , value, kingdom))
 
-        uniqueOps = list(set(allOps))
-        uniqueOpsJson = [{"rank" : r, "value" : v, "kingdom" : k} for r, v, k in uniqueOps]
+    uniqueOps = list(set(allOps))
+    uniqueOpsSorted = []
+    for rank in ranks:
+        for pair in uniqueOps:
+            if pair[0] == rank:
+                uniqueOpsSorted.append(pair)
+
+    uniqueOpsJson = [{"rank" : r, "value" : v, "kingdom" : k} for r, v, k in uniqueOpsSorted]
 
     return JsonResponse(uniqueOpsJson[:10], safe=False, status = 200)
 

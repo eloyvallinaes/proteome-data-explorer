@@ -12,11 +12,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById("add-highlight-dialog").onclick = add_highlight_dialog;
 
-    // Search box action
+
+    // Fill search box with options
     let scheduled_function = false
     $( "#taxa-search" ).on( "keyup", function () {
         event.preventDefault();
-        console.log($(this).val())
         if (scheduled_function) {
                 clearTimeout(scheduled_function)
             }
@@ -25,8 +25,32 @@ document.addEventListener('DOMContentLoaded', function() {
         scheduled_function = setTimeout(call_search_taxa, 1000, $(this).val())
     });
 
+
     // Create the chart with gray background scatter
     chart_init();
+
+
+    // Remove all extra traces except background and make all options available
+    $( "#reset" ).on("click", () => {
+        var myChart = Chart.getChart("myChart");
+        while (myChart.data.datasets.length > 1) {
+            myChart.data.datasets.pop();
+        };
+        myChart.update();
+        $("#highligh-menus > option").forEach(
+            function (option) {
+                option.disabled = false;
+                if (option.value === "placeholder") {
+                    option.selected = true;
+                };
+            });
+        // remove extra rows in the add-highlight table
+        var table = $("#highlight-menus");
+        for (let i = table.rows.length - 1; i > 1; i--) {
+            table.deleteRow(i)
+
+        };
+    });
 });
 
 function chart_init() {
@@ -233,7 +257,10 @@ function add_highlight(event) {
 function add_highlight_dialog(event) {
     event.preventDefault(); // prevent page from scrolling up
     var table = document.getElementById("highlight-menus");
-    let i = table.rows.length;
+    // Recover chart instance
+    var myChart = Chart.getChart("myChart");
+    var datasets = myChart.data.datasets;
+    let i = datasets.length;
     var nextRow = table.insertRow(table.rows.length);
     var rowModel = document.getElementById("rowmodel").cloneNode(deep = true);
     rowModel.setAttribute("id", "")
@@ -255,156 +282,31 @@ let call_search_taxa = function ( query ){
     $.getJSON("/taxa/", {
         q: query
     }).done( response => {
-        $("#taxa-options").empty();
+        $( "#taxa-options" ).empty();
         response.forEach( (item) => {
-            var op = document.createElement("option");
+            var op = document.createElement("button")
             op.setAttribute("value", item["value"]);
             op.setAttribute("rank", item["rank"]);
-            op.innerHTML = `${item["rank"]}: ${item["value"]} @ ${item["kingdom"]}`
+            op.classList = "btn btn-link op-link";
+            op.style = "text-align: left; width: 100%";
+            op.setAttribute("href", "#");
+            op.innerHTML = `${item["rank"]}: ${item["value"]}<br>@ ${item["kingdom"]}`
             $("#taxa-options").append(op);
-        })
+        });
+        // Bind: adding highlight through options on search box
+        $( "#taxa-options > button" ).on("click", function (e) {
+            e.preventDefault();
+            let rank = e.target.getAttribute("rank");
+            let value = e.target.value;
+            let varx = $( "#x-choose" ).val();
+            let vary = $( "#y-choose" ).val();
+            // Recover chart instance
+            var myChart = Chart.getChart("myChart");
+            var datasets = myChart.data.datasets;
+            let pos = datasets.length;
+            add_trace(varx, vary, rank, value, pos)
+            .then(() => { myChart.update() });
+
+        });
     })
 };
-
-
-
-//     var rowmodel = Handlebars.compile(document.getElementById("rowmodel").innerHTML);
-//     nextrow.innerHTML = rowmodel({"i" : i});
-//     // Add options
-//     show_options(name = "all", rank = "kingdom", id = i);
-//     // Add the event listeners
-//     bind_dropdowns()
-// };
-
-
-// function bind_dropdowns() {
-//   // Bind functions to dropdowns
-//   var dropdowns = document.querySelectorAll(".choose");
-//   dropdowns.forEach(
-//     function (dropdown) {
-//       dropdown.addEventListener("change", add_trace);
-//       dropdown.addEventListener("change", show_options);
-//       }
-//   );
-// };
-
-//     // Request dataset from Flask, add to datasets and remove option from menu
-//     function add_trace(name = null, rank = null, count = null, rowno = null) {
-//         // Recover chart instance
-//         var myChart = Chart.instances[0];
-//         var datasets = myChart.data.datasets;
-//         if (!name || !rank || !count || !rowno) {
-//             var rowno = parseInt(this.id.split("-")[2]);
-//             [name, rank] = this.value.split(",");
-//             var count = myChart.data.datasets.length;
-//         };
-//         // Find if this row already produced a datasets
-//         var rowindex = datasets.findIndex((dataset) => {return dataset.row === rowno})
-//         // Initialize new request
-//         const request = new XMLHttpRequest();
-//         request.open('POST', '/add_trace');
-//         request.onload = () => {
-//             const dataset = JSON.parse(request.responseText);
-//             if (rowindex === -1) {
-//                 // if no dataset already in chart
-//                 addDataset(myChart, dataset);
-//                 console.log("New dataset added: ", dataset["label"]);
-//             }
-//             else {
-//                 myChart.data.datasets[rowindex] = dataset;
-//                 myChart.update()
-//                 console.log("Dataset replacement: ", dataset["label"]);
-//             };
-//         };
-//         // Add data to send with request
-//         const info = new FormData();
-//         // rank and category just selected and number of active datasets
-//         info.append('name', name);
-//         info.append('rank', rank);
-//         info.append('count', count);
-//         info.append('rowno', rowno);
-//         request.send(info);
-//         return false;
-//     }
-//     // Remove all extra traces except background and make all options available
-//     function reset() {
-//         myChart = Chart.instances[0];
-//         while (myChart.data.datasets.length > 1) {
-//             myChart.data.datasets.pop();
-//         }
-//         myChart.update();
-//         document.querySelectorAll("option").forEach(
-//             function (option) {
-//                 option.disabled = false;
-//                 if (option.value === "placeholder") {
-//                     option.selected = true;
-//                 };
-//             });
-//         // remove extra rows in the add-highlight table
-//         var table = document.getElementById("highlight-menus");
-//         for (let i = table.rows.length - 1; i > 1; i--) {
-//             table.deleteRow(i)
-//         }
-//     };
-//     // Show options for lower levels when selected
-//     function show_options(name = null, rank = null, rowno = 0) {
-//         var levels = ["kingdom", "phylum", "class", "order", "family", "genus", "species"]
-//         var placeholder = "<option value=\"placeholder\" selected disabled hidden>Choose here</option>\n"
-//         if (!name || !rank) {
-//             [name, rank] = this.value.split(",");
-//             rowno = this.id.split("-")[2];
-//         };
-//         // reset all lower dropdowns
-//         for (let i = levels.indexOf(rank) + 1; i < levels.length-1; i++) {
-//             let levelname = levels[i];
-//             document.querySelector(`#choose-${levelname}-${rowno}`).innerHTML = placeholder;
-//         };
-//         // if rank=kingdom and name=all do not send request and keep placeholders
-//         if (rank === "kingdom" && name === "all") {
-//             return false;
-//         }
-//         else {
-//             // otherwise retrieve names of lower rank and fill table
-//             var lower = levels[levels.indexOf(rank) + 1];
-//             var optionmodel = Handlebars.compile(document.getElementById("optionmodel").innerHTML);
-//             const request = new XMLHttpRequest();
-//             request.open('POST', '/show_options');
-//             request.onload = () => {
-//                 const data = JSON.parse(request.responseText);
-//                 // add options to immediately lower dropdown
-//                 for (let i = 0; i < data.length; i++) {
-//                     var item = data[i];
-//                     var option = optionmodel({"name" : item.name, "rowno" : item.rowno, "rank" : lower})
-//                     document.querySelector(`#choose-${lower}-${rowno}`).innerHTML += option;
-//                 };
-//             };
-//             // Add data to send with request
-//             const info = new FormData();
-//             // category just selected
-//             info.append('name', name);
-//             info.append('rank', rank);
-//             // Send request
-//             request.send(info);
-//         };
-//
-//     };
-    // Update chart on value change of the varx, vary dropdowns
-
-//     // Retrieve available value-label pairs for the axes from backend
-//     function show_vars() {
-//         const request = new XMLHttpRequest();
-//         request.open('POST', '/show_vars');
-//         varopmodel = Handlebars.compile(document.querySelector("#varopmodel").innerHTML)
-//         request.onload = function () {
-//             var response = JSON.parse(request.responseText)
-//             for (var key of Object.keys(response)) {
-//                 var varoption = varopmodel({"key" : key, "value" : response[key]})
-//                 document.querySelector("#choose-x").innerHTML += varoption;
-//                 document.querySelector("#choose-y").innerHTML += varoption;
-//             }
-//             // ensure default options match chart
-//             document.querySelector("#choose-x").children[2].selected = true;
-//             document.querySelector("#choose-y").children[1].selected = true;
-//         }
-//         request.send();
-//     };
