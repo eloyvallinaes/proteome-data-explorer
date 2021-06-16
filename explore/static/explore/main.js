@@ -37,18 +37,10 @@ document.addEventListener('DOMContentLoaded', function() {
             myChart.data.datasets.pop();
         };
         myChart.update();
-        $("#highligh-menus > option").forEach(
-            function (option) {
-                option.disabled = false;
-                if (option.value === "placeholder") {
-                    option.selected = true;
-                };
-            });
         // remove extra rows in the add-highlight table
-        var table = $("#highlight-menus");
+        var table = document.getElementById("highlight-menus");
         for (let i = table.rows.length - 1; i > 1; i--) {
             table.deleteRow(i)
-
         };
     });
 });
@@ -183,7 +175,6 @@ function varchange() {
 
 
 function show_options(event) {
-    console.log(event.target.id)
     var ranks = ["kingdom", "phylum", "taxClass", "order", "family", "genus", "species"]
     var rank = event.target.id.split("-")[0]
     if (rank === "genus") {

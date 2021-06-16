@@ -33,7 +33,7 @@
         <div class="col-lg-9 col-md-7 pl-0 mx-0 pr-2">
             <div class="boxed">
                 <canvas width="720" height="480" id="myChart"></canvas>
-                <div class="headerSubTitle d-flex justify-content-end">Hint: hide traces by clicking them on the legend</div>
+                <div class="headerSubTitle d-flex justify-content-end">Hint: click highlights on the legend to toggle visibility</div>
             </div>
         </div>
         <!-- Right side menu, choose variables -->
@@ -86,10 +86,9 @@
                 <div class="boxed">
                     <form autocomplete="off" onsubmit="return false">
                         <div class="form-group">
-                            <span class="sectionTitle">Taxa search</span><br>
+                            <span class="sectionTitle">Taxa search &#x1F50D;</span><br>
                             <span class="headerSubTitle">Click to add subset highlight</span>
 
-                            <i id="search-icon" class="fas fa-search"></i>
                             <input type="search" list="taxa-options" class="form-control" id="taxa-search" placeholder="start typing">
                             <div id="taxa-options" style="overflow-y: auto; max-height: 120px; width: 100%;" >
 
@@ -120,7 +119,7 @@
                 </tr>
                 <tr id="rowmodel" class="flex-d justify-content-between" style="display: none;">
                   <td>
-                      <select class="form-control choose" id = "kingdom-1">
+                      <select class="form-control choose" id = "kingdom-0">
                           <option id="op-Bacteria" value="Bacteria">Bacteria (N = 13799)</option>
                           <option id="op-Eukaryota" value="Eukaryota">Eukaryota (N = 2036)</option>
                           <option id="op-Archaea" value="Archaea">Archaea (N = 2239)</option>
@@ -128,27 +127,27 @@
                       </select>
                   </td>
                   <td>
-                      <select class="form-control choose" id = "phylum-1">
+                      <select class="form-control choose" id = "phylum-0">
                           <option value="placeholder" selected disabled hidden>Choose here</option>
                       </select>
                   </td>
                   <td>
-                      <select class="form-control choose" id = "taxClass-1">
+                      <select class="form-control choose" id = "taxClass-0">
                           <option value="placeholder" selected disabled hidden>Choose here</option>
                       </select>
                   </td>
                   <td>
-                      <select class="form-control choose" id = "order-1">
+                      <select class="form-control choose" id = "order-0">
                           <option value="placeholder" selected disabled hidden>Choose here</option>
                       </select>
                   </td>
                   <td>
-                      <select class="form-control choose" id = "family-1">
+                      <select class="form-control choose" id = "family-0">
                           <option value="placeholder" selected disabled hidden>Choose here</option>
                       </select>
                   </td>
                   <td>
-                      <select class="form-control choose" id = "genus-1">
+                      <select class="form-control choose" id = "genus-0">
                           <option value="placeholder" selected disabled hidden>Choose here</option>
                       </select>
                   </td>

@@ -1,6 +1,7 @@
 body {
   background-color: rgb(250, 250, 250);
   font-family: sans-serif;
+  padding-top: 5px;
 }
 
 label {
@@ -63,7 +64,7 @@ ul {
     margin-left: 0px;
     padding-left: 15px;
     padding-right: 15px;
-    padding-top: 5px;
+    padding-top: 10px;
     padding-bottom: 5px;
 }
 
