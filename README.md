@@ -13,6 +13,9 @@ Frontend relies on a single `main.js` and Bootstrap4.0 utilities.
 
 Deployed to Heroku on September 2021.
 
+### Heroku
+Heroku's repo for this project can be cloned using: `heroku git:clone -a proteome-explorer` or **preferably** from https://github.com/eloyvallinaes/proteome-data-explorer.git.
+
 ### Database
 While an sqlite3 database was used during development, Heroku doesn't admit static
 databases, so all of the data needed to be migrated to a remote postgresql database.

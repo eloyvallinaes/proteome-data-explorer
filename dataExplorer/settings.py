@@ -77,18 +77,18 @@ WSGI_APPLICATION = 'dataExplorer.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # },
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'denf2r0kqefnt6',
-        'USER': 'fyzcwycdylfviv',
-        'PASSWORD': '5a7786cfa3117aff2feb86e93459170c865c2694e03782fcfa248461a1a1d966',
-        'HOST': 'ec2-54-155-254-112.eu-west-1.compute.amazonaws.com',
-        'PORT': '5432',
-    }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'dd8i99g0oo6398',
+    #     'USER': 'zpblsryieayrtr',
+    #     'PASSWORD': 'b648822a52e0a9e9658258447fd136525ab99f7741c19ab57de01eed78d5bc1b',
+    #     'HOST': 'ec2-54-220-14-54.eu-west-1.compute.amazonaws.com',
+    #     'PORT': '5432',
+    # }
 }
 
 AUTH_USER_MODEL = "explore.User"

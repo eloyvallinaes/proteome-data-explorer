@@ -43,6 +43,9 @@ document.addEventListener('DOMContentLoaded', function() {
             table.deleteRow(i)
         };
     });
+
+
+
 });
 
 function chart_init() {
@@ -99,6 +102,8 @@ function chart_init() {
                                           },
                             },
                 });
+                // Add the first highlight dialog
+                $( "#add-highlight-dialog" ).click();
             });
 };
 
@@ -124,7 +129,7 @@ function add_trace(varx, vary, rank, value, idx) {
                            }
          ).then( function(response) {
              if (response.ok === true) {
-                 return response.json()
+                 return response.json();
              } else {
                  console.log("error");
              };
@@ -134,7 +139,6 @@ function add_trace(varx, vary, rank, value, idx) {
              myChart.options.scales.x.title.text = content.axislabels.x;
              myChart.options.scales.y.title.text = content.axislabels.y;
          });
-    return true
 };
 
 
@@ -224,7 +228,6 @@ function makePlaceholder() {
     placeholder.setAttribute('selected', true);
     placeholder.setAttribute('disabled', true);
     placeholder.setAttribute('hidden', true);
-
     return placeholder;
 };
 
@@ -239,29 +242,32 @@ function add_highlight(event) {
     // Recover chart instance
     var myChart = Chart.getChart("myChart");
     var datasets = myChart.data.datasets;
-    add_trace(varx, vary, rank, value, pos)
-    .then(() => { myChart.update() });
+    add_trace(varx, vary, rank, value, pos).then(() => {
+        console.log("trigger")
+        myChart.update() });
 };
 
 
 // Add highlight dialog
 function add_highlight_dialog(event) {
-    event.preventDefault(); // prevent page from scrolling up
+    event.preventDefault();
+    // Workout id for new dropdowns
     var table = document.getElementById("highlight-menus");
-    // Recover chart instance
-    var myChart = Chart.getChart("myChart");
-    var datasets = myChart.data.datasets;
-    let i = datasets.length;
+    let i = table.rows.length - 1;
+    // Insert row
     var nextRow = table.insertRow(table.rows.length);
+    // Clone drop model and update every id
     var rowModel = document.getElementById("rowmodel").cloneNode(deep = true);
-    rowModel.setAttribute("id", "")
+    rowModel.setAttribute("id", "");
     Array.from(rowModel.children).forEach((column) => {
         var dropdown = column.getElementsByTagName("select")[0];
         let newId = dropdown.id.split("-")[0] + "-" + i;
         dropdown.setAttribute("id", newId);
     });
+    // Insert dropdowns into row
     nextRow.innerHTML = rowModel.innerHTML;
     document.querySelectorAll(".choose").forEach((dropdown) => {
+        // Bind functions to dropdown menus
         dropdown.addEventListener('change', show_options);
         dropdown.addEventListener('change', add_highlight);
 

@@ -3,22 +3,13 @@
 {% csrf_token %}
 
 {% block body %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.0/chart.min.js" integrity="sha512-yadYcDSJyQExcKhjKSQOkBKy2BLDoW6WnnGXCAkCoRlpHGpYuVuBqGObf3g/TdB86sSbss1AOP4YlGSb6EKQPg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-
-<!-- <script type="text/javascript" src="{% static 'explore/chartjs-plugin-colorschemes.js' %}"></script> -->
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
-<script src="{% static 'explore/jquery-3.6.0.js' %}"></script>
-<script src="{% static 'explore/main.js' %}"></script>
-
-</script>
 
 <div class="row d-flex justify-content-between mx-0">
     <!-- Page header and links -->
     <div class="col-12 px-0">
         <div class="boxed">
             <div class="col-12 text-left">
-                <div class="headerTitle">Physicochemical coordinates of cellular organisms</div>
+                <div class="headerTitle">Physicochemical proteome properties across cellular organisms</div>
                 <div class="headerSubTitle">Data explorer</div>
             </div>
             <div class="col-md text-right">
@@ -165,8 +156,9 @@
 
 </div>
 
-
-
-
-
+{% endblock %}
+{% block script %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.0/chart.min.js" integrity="sha512-yadYcDSJyQExcKhjKSQOkBKy2BLDoW6WnnGXCAkCoRlpHGpYuVuBqGObf3g/TdB86sSbss1AOP4YlGSb6EKQPg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script src="{% static 'explore/main.js' %}"></script>
 {% endblock %}
