@@ -74,3 +74,13 @@ ul {
     padding: 0px;
     border-bottom: 1px solid lightgray;
 }
+
+#dataset-form {
+    padding-bottom:10px;
+}
+
+#taxa-options {
+    overflow-y: auto;
+    max-height: 120px;
+    width: 100%;
+}

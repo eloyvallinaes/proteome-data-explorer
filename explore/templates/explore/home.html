@@ -29,6 +29,20 @@
         </div>
         <!-- Right side menu, choose variables -->
         <div class="col-lg-3 col-md-5 mx-0 px-0">
+            <div class="col-12 align-self-end mx-0 px-0">
+                <div class="boxed">
+                    <form id="dataset-form">
+                        <div class="sectionTitle">Choose dataset</div>
+                        <select class="form-control" id="dataset-choose">
+                            <option selected value="ncbi">NCBI</option>
+                            <option value="uniprot">UniProt</option>
+                            <option value="intersect">Intersection</option>
+
+                        </select>
+                    </form>
+
+                </div>
+            </div>
             <div class="col-12 px-0">
                 <div class="boxed">
                     <form>
@@ -79,9 +93,8 @@
                         <div class="form-group">
                             <span class="sectionTitle">Taxa search &#x1F50D;</span><br>
                             <span class="headerSubTitle">Click to add subset highlight</span>
-
                             <input type="search" list="taxa-options" class="form-control" id="taxa-search" placeholder="start typing">
-                            <div id="taxa-options" style="overflow-y: auto; max-height: 120px; width: 100%;" >
+                            <div id="taxa-options">
 
                             </div>
                         </div>
