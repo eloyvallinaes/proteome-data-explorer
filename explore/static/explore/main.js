@@ -55,9 +55,9 @@ function chart_init() {
                             body : JSON.stringify({
                                                     varx : "ncd1000",
                                                     vary : "mwkda",
-                                                    pos  : 0,
                                                     rank : "kingdom",
                                                     value : "all",
+                                                    idx : 0,
                                                 }),
                             credentials : "include",
                             headers : {"X-CSRFToken" : csrftoken}
@@ -115,27 +115,29 @@ function add_trace(varx, vary, rank, value, idx) {
     // Recover chart instance
     var myChart = Chart.getChart("myChart");
     var datasets = myChart.data.datasets;
+    var dataMap = new Map()
+    for (i in datasets) {
+          dataMap.set(datasets[i]["idx"], datasets[i])
+        };
+
     return fetch('/take_subset/', {
                             method : "POST",
                             body : JSON.stringify({
                                                     varx : varx,
                                                     vary : vary,
-                                                    pos  : idx,
                                                     rank : rank,
                                                     value : value,
+                                                    idx : idx,
                                                 }),
                             credentials : "include",
                             headers : {"X-CSRFToken" : csrftoken}
                            }
-         ).then( function(response) {
-             if (response.ok === true) {
-                 return response.json();
-             } else {
-                 console.log("error");
-             };
-         })
+         )
+         .then( response => response.json())
          .then( content => {
-             datasets[idx]=content.dataset;
+             // by tracking idx, I make sure the correct dataset is replaced every time
+             dataMap.set(idx, content.dataset);
+             myChart.data.datasets = Array.from(dataMap.values());
              myChart.options.scales.x.title.text = content.axislabels.x;
              myChart.options.scales.y.title.text = content.axislabels.y;
          });
@@ -235,15 +237,13 @@ function makePlaceholder() {
 function add_highlight(event) {
     var rank = event.target.id.split("-")[0];
     // Including header, table initially has 2 rows while Chart has 1 dataset
-    var pos = parseInt(event.target.id.split("-")[1]);
+    var idx = parseInt(event.target.id.split("-")[1]);
     var value = event.target.value;
     var varx = document.getElementById("x-choose").value;
     var vary = document.getElementById("y-choose").value;
     // Recover chart instance
     var myChart = Chart.getChart("myChart");
-    var datasets = myChart.data.datasets;
-    add_trace(varx, vary, rank, value, pos).then(() => {
-        console.log("trigger")
+    add_trace(varx, vary, rank, value, idx).then(() => {
         myChart.update() });
 };
 
@@ -300,8 +300,8 @@ let call_search_taxa = function ( query ){
             // Recover chart instance
             var myChart = Chart.getChart("myChart");
             var datasets = myChart.data.datasets;
-            let pos = datasets.length;
-            add_trace(varx, vary, rank, value, pos)
+            let idx = datasets.length;
+            add_trace(varx, vary, rank, value, idx)
             .then(() => { myChart.update() });
 
         });

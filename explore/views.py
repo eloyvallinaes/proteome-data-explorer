@@ -43,7 +43,7 @@ def take_subset(request):
         data = json.loads(request.body)
         varx = data['varx']
         vary = data['vary']
-        pos = int(data['pos'])
+        idx = int(data['idx'])
         rank = data['rank']
         value = data['value']
         if rank == "kingdom" and value == "all":
@@ -55,19 +55,20 @@ def take_subset(request):
             myFilter = {rank : value}
             matches  = [item.serialize() for item in Props.objects.filter(**myFilter).all()]
             # choose a color
-            color = palette[pos]
+            color = palette[idx]
 
         # format a dataset for chart.js
         dataset = {
                     "data" : [{"x" : item[varx], "y" : item[vary]} for item in matches],
                     "label" : f"{value} (N = {len(matches)})",
                     "pointBorderColor" : "white",
-                    "order" : 20 - pos,
+                    "order" : 20 - idx,
                     "backgroundColor" : color,
                     "borderColor" : "white",
                     # extra fields - not for chart.js
                     "rank" : rank,
                     "value" : value,
+                    "idx" : idx,
                   }
         response = {
                     "dataset" : dataset,

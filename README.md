@@ -22,8 +22,11 @@ databases, so all of the data needed to be migrated to a remote postgresql datab
 This process involved:
 1. Loading data to sqlite3 database; see [`pandas.DataFrame.to_sql`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_sql.html).
 2. Letting Django infer the appropriate models for the data; see [`python3 manage.py inspectdb`](https://docs.djangoproject.com/en/3.2/howto/legacy-databases/).
-3. Dumping the data to a properly formatted fixture with [`django-admin dumpdata`](https://docs.djangoproject.com/en/3.2/ref/django-admin/), preferably excluding additional tables like `contenttypes` or `sessions` if present.
-4. Creating a postgresql service at Heroku and connecting app to that databse:
+3. Dumping the data to a properly formatted fixture with [`django-admin dumpdata`](https://docs.djangoproject.com/en/3.2/ref/django-admin/), preferably excluding additional tables like `contenttypes` or `sessions` if present. For instance:
+```
+python3 manage.py dumpdata --database default --indent 4 -e contenttypes -e auth -e sessions > dataDump.json
+```
+4. Creating a postgresql service at Heroku and connecting app to that database:
 ```
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -42,5 +45,8 @@ DATABASES = {
     }
 }
 ```
-5. Loading fixture to remote database with `django-admin loaddata`. For a fixture containing 18000+ rows, this takes several minutes, be patient.
+5. Loading fixture to remote database with `django-admin loaddata`. For a fixture containing 18000+ rows, this takes several minutes; be patient.
 6. Upgrade Heroku postgresql database from hobby-dev to **hobby-basic**, since it contains too many rows for the free plan (limited to 1000). See [updating database](https://devcenter.heroku.com/articles/upgrading-heroku-postgres-databases#upgrading-with-pg-copy).
+
+#### Changing data
+Updates can be issued to database ```Props``` table with ```scripts/load_data.py```. After that, steps 3 and 5 from the above list need to be repeated.
