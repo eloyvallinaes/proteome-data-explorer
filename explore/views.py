@@ -6,7 +6,6 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 
 from .models import Props
-from django.db.models import Q
 
 # Some globals
 labels = {"mwkda" : "protein size (kDa)",
@@ -46,17 +45,16 @@ def take_subset(request):
         idx = int(data['idx'])
         rank = data['rank']
         value = data['value']
+        myFilter = {"dataset": data["origin"]}
         if rank == "kingdom" and value == "all":
             # null query to start chart
-            matches  = [item.serialize() for item in Props.objects.all()]
             color = "lightgray"
         else:
             # make query to DB
-            myFilter = {rank : value}
-            matches  = [item.serialize() for item in Props.objects.filter(**myFilter).all()]
-            # choose a color
+            myFilter.update({rank : value})
             color = palette[idx]
 
+        matches  = [item.serialize() for item in Props.objects.filter(**myFilter).all()]
         # format a dataset for chart.js
         dataset = {
                     "data" : [{"x" : item[varx], "y" : item[vary]} for item in matches],
@@ -94,9 +92,7 @@ def find_options(request):
             options.remove(None)
 
         counts = [len( Props.objects.filter(**{lowerRank : option}) ) for option in options]
-
         response = [{"name" : option, "count" : count} for option, count in zip(options, counts)]
-
         response = sorted(response, key = lambda item: item["count"], reverse = True)
 
         return JsonResponse(response, safe = False, status = 200)

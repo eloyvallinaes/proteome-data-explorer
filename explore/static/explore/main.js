@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById("origin-choose").onchange = varchange;
     document.getElementById("x-log").onclick = varlog;
     document.getElementById("y-log").onclick = varlog;
     document.getElementById("y-choose").onchange = varchange;
@@ -58,6 +59,7 @@ function chart_init() {
                                                     rank : "kingdom",
                                                     value : "all",
                                                     idx : 0,
+                                                    origin: "ncbi"
                                                 }),
                             credentials : "include",
                             headers : {"X-CSRFToken" : csrftoken}
@@ -110,7 +112,7 @@ function chart_init() {
 
 // Request dataset from backend, add to datasets;
 // idx is the index of Chart.datasets, where the new trace is being inserted
-function add_trace(varx, vary, rank, value, idx) {
+function add_trace(rank, value, idx) {
     let csrftoken = Cookies.get('csrftoken')
     // Recover chart instance
     var myChart = Chart.getChart("myChart");
@@ -123,11 +125,12 @@ function add_trace(varx, vary, rank, value, idx) {
     return fetch('/take_subset/', {
                             method : "POST",
                             body : JSON.stringify({
-                                                    varx : varx,
-                                                    vary : vary,
+                                                    varx : $( "#x-choose" ).val(),
+                                                    vary : $( "#y-choose" ).val(),
                                                     rank : rank,
                                                     value : value,
                                                     idx : idx,
+                                                    origin : $( "#origin-choose" ).val()
                                                 }),
                             credentials : "include",
                             headers : {"X-CSRFToken" : csrftoken}
@@ -144,39 +147,18 @@ function add_trace(varx, vary, rank, value, idx) {
 };
 
 
-// Detect click on log boxes and change scale
-function varlog(event) {
-    var myChart = Chart.getChart("myChart");
-    var axname = event.target.id.split("-")[0]; // x or y
-    if (event.target.checked === true) {
-        myChart.options.scales[axname].type = "logarithmic"
-    }
-    else {
-        myChart.options.scales[axname].type = "linear"
-    };
-    myChart.update();
-};
-
-
 // Update plot when value of variable dropdowns changes
-function varchange() {
+async function varchange() {
     var myChart = Chart.getChart("myChart");
     var datasets = myChart.data.datasets
-    myChart.data.datasets = [];
-    var varx = document.getElementById("x-choose").value;
-    var vary = document.getElementById("y-choose").value;
-    processed = 0
-    datasets.forEach( (dataset, idx, arr) => {
-        add_trace(varx, vary, dataset.rank, dataset.value, idx)
-        .then(() => { if (processed === arr.length - 1) {
-                    myChart.update()
-                } else {
-                    processed++
-                };
-        });
-
-    })
-
+    let processed = 0
+    for (const dataset of datasets) {
+        let r = await add_trace(dataset.rank, dataset.value, dataset.idx);
+        processed++;
+        if (processed === datasets.length) {
+            Chart.getChart("myChart").update();
+        };
+    }
 };
 
 
@@ -239,11 +221,9 @@ function add_highlight(event) {
     // Including header, table initially has 2 rows while Chart has 1 dataset
     var idx = parseInt(event.target.id.split("-")[1]);
     var value = event.target.value;
-    var varx = document.getElementById("x-choose").value;
-    var vary = document.getElementById("y-choose").value;
     // Recover chart instance
     var myChart = Chart.getChart("myChart");
-    add_trace(varx, vary, rank, value, idx).then(() => {
+    add_trace(rank, value, idx).then(() => {
         myChart.update() });
 };
 
@@ -275,6 +255,7 @@ function add_highlight_dialog(event) {
 
 };
 
+// Find matching taxa in searchbox
 let call_search_taxa = function ( query ){
     $.getJSON("/taxa/", {
         q: query
@@ -295,15 +276,27 @@ let call_search_taxa = function ( query ){
             e.preventDefault();
             let rank = e.target.getAttribute("rank");
             let value = e.target.value;
-            let varx = $( "#x-choose" ).val();
-            let vary = $( "#y-choose" ).val();
             // Recover chart instance
             var myChart = Chart.getChart("myChart");
             var datasets = myChart.data.datasets;
             let idx = datasets.length;
-            add_trace(varx, vary, rank, value, idx)
+            add_trace(rank, value, idx+5)
             .then(() => { myChart.update() });
 
         });
     })
+};
+
+
+// Detect click on log boxes and change scale
+function varlog(event) {
+    var myChart = Chart.getChart("myChart");
+    var axname = event.target.id.split("-")[0]; // x or y
+    if (event.target.checked === true) {
+        myChart.options.scales[axname].type = "logarithmic"
+    }
+    else {
+        myChart.options.scales[axname].type = "linear"
+    };
+    myChart.update();
 };

@@ -6,7 +6,8 @@ class User(AbstractUser):
 
 
 class Props(models.Model):
-    Name = models.TextField(db_column='Name', primary_key=True)
+    id = models.BigIntegerField(db_column='id', primary_key=True)
+    Name = models.TextField(db_column='Name', blank=True, null=True)
     Length = models.FloatField(db_column='Length', blank=True, null=True)
     Mass = models.FloatField(db_column='Mass', blank=True, null=True)
     SASAmiller = models.FloatField(db_column='SASAmiller', blank=True, null=True)
@@ -48,8 +49,10 @@ class Props(models.Model):
     order = models.TextField(blank=True, null=True)
     family = models.TextField(blank=True, null=True)
     genus = models.TextField(blank=True, null=True)
-    species = models.TextField(db_column='Species', blank=True, null=True)
+    species = models.TextField(db_column='species', blank=True, null=True)
     taxid = models.TextField(db_column='Taxid', blank=True, null=True)
+    dataset = models.TextField(db_column="dataset", null=False)
+
 
     class Meta:
         managed = True
