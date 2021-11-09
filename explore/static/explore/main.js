@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dropdown.addEventListener('change', add_highlight);
 
     });
-
+    
     document.getElementById("add-highlight-dialog").onclick = add_highlight_dialog;
 
 
@@ -45,10 +45,10 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     });
 
-
-
 });
 
+
+// Create the chart and add background data; set up dialog
 function chart_init() {
     let csrftoken = Cookies.get('csrftoken')
     fetch('/take_subset/', {
@@ -147,7 +147,7 @@ function add_trace(rank, value, idx) {
 };
 
 
-// Update plot when value of variable dropdowns changes
+// Update plot when value of variable/dataset dropdowns changes
 async function varchange() {
     var myChart = Chart.getChart("myChart");
     var datasets = myChart.data.datasets
@@ -161,7 +161,7 @@ async function varchange() {
     }
 };
 
-
+// Fill up dialogs with options
 function show_options(event) {
     var ranks = ["kingdom", "phylum", "taxClass", "order", "family", "genus", "species"]
     var rank = event.target.id.split("-")[0]
@@ -204,7 +204,7 @@ function show_options(event) {
 
 };
 
-
+// An option template
 function makePlaceholder() {
     var placeholder = document.createElement('option');
     placeholder.value = "placeholder";
@@ -215,10 +215,9 @@ function makePlaceholder() {
     return placeholder;
 };
 
-
+// Add from dialogs
 function add_highlight(event) {
     var rank = event.target.id.split("-")[0];
-    // Including header, table initially has 2 rows while Chart has 1 dataset
     var idx = parseInt(event.target.id.split("-")[1]);
     var value = event.target.value;
     // Recover chart instance
