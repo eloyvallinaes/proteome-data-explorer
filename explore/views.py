@@ -23,11 +23,11 @@ palette = sns.color_palette('tab10', 10).as_hex()
 
 
 def index(request):
-    user = request.user
-    if user.is_authenticated:
-        return render(request, "explore/home.html")
-    else:
-        return render(request, "explore/login.html")
+# user = request.user
+# if user.is_authenticated:
+    return render(request, "explore/home.html")
+# else:
+#     return render(request, "explore/login.html")
 
 
 
