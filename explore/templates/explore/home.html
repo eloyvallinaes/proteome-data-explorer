@@ -1,6 +1,5 @@
 {% extends "explore/layout.html" %}
 {% load static %}
-{% csrf_token %}
 
 {% block body %}
 
@@ -32,6 +31,7 @@
             <div class="col-12 align-self-end mx-0 px-0">
                 <div class="boxed">
                     <form id="dataset-form">
+                        {% csrf_token %}
                         <div class="sectionTitle">Choose dataset</div>
                         <select class="form-control" id="origin-choose">
                             <option selected value="ncbi">NCBI</option>
