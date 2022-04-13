@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dropdown.addEventListener('change', add_highlight);
 
     });
-    
+
     document.getElementById("add-highlight-dialog").onclick = add_highlight_dialog;
 
 
@@ -44,6 +44,27 @@ document.addEventListener('DOMContentLoaded', function() {
             table.deleteRow(i)
         };
     });
+
+    // Togglers
+    $( "#explorerButton" ).on( 'click',  (event) => {
+            // tweak navigation active state and show/hide divs as required
+            event.preventDefault();
+            $( "a.nav-link").removeClass("active")
+            event.target.classList.add("active")
+            $( "#explorer" ).show();
+            $( "#downloads" ).hide();
+
+        });
+
+    $( "#downloadsButton" ).on( 'click',  (event) => {
+            // tweak navigation active state and show/hide divs as required
+            event.preventDefault();
+            $( "a.nav-link").removeClass("active")
+            event.target.classList.add("active")
+            $( "#explorer" ).hide();
+            $( "#downloads" ).show();
+
+        });
 
 });
 
