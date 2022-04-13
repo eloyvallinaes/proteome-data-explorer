@@ -22,8 +22,6 @@ urlpatterns = [
     path('', views.index, name="index"),
     path('take_subset/', views.take_subset),
     path('options/', views.find_options),
-    path("login", views.login_view, name="login"),
-    path("logout/", views.logout_view, name="logout"),
     path("taxa/", views.taxa_search)
 
 ]
