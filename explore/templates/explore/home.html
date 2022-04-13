@@ -176,11 +176,54 @@
 <!-- Downloads view -->
 <div id="downloads" style="display:none">
     <div class="row">
-        <div class="col boxed">
-            <p>Archaea: <a href="#">Dataset link</a></p>
-            <p>Bacteria: <a href="#">Dataset link</a></p>
-            <p>Eukaryota: <a href="#">Dataset link</a></p>
-            
+        <div class="col boxed px-5">
+            <table width="80%" class="table">
+                <tr>
+                    <th style="width: 33%">Uniprot</th>
+                    <th style="width: 33%"></th>
+                    <th style="width: 33%"></th>
+
+                </tr>
+                <tr>
+                    <td>Archaea</td>
+                    <td><a href="{% static "explore/datasets/Archaea_uniprot_avg.csv" %}">averages</a></td>
+                    <td><a href="{% static "explore/datasets/Archaea_uniprot_median.csv" %}">median</a></td>
+                </tr>
+                <tr>
+                    <td>Bacteria</td>
+                    <td><a href="{% static "explore/datasets/Bacteria_uniprot_avg.csv" %}">averages</a></td>
+                    <td><a href="{% static "explore/datasets/Bacteria_uniprot_median.csv" %}">median</a></td>
+                </tr>
+                <tr>
+                    <td>Eukaryota</td>
+                    <td><a href="{% static "explore/datasets/Eukaryota_uniprot_avg.csv" %}">averages</a></td>
+                    <td><a href="{% static "explore/datasets/Bacteria_uniprot_median.csv" %}">median</a></td>
+                </tr>
+                <tr>
+                    <td></td><td></td><td></td>
+                </tr>
+                <tr>
+                    <th style="width: 33%">NCBI Assemblies</th>
+                    <th style="width: 33%"></th>
+                    <th style="width: 33%"></th>
+                </tr>
+                <tr>
+                    <td>Archaea</td>
+                    <td><a href="{% static "explore/datasets/Archaea_ncbi_avg.csv" %}">averages</a></td>
+                    <td><a href="{% static "explore/datasets/Archaea_ncbi_median.csv" %}">median</a></td>
+                </tr>
+                <tr>
+                    <td>Bacteria</td>
+                    <td><a href="{% static "explore/datasets/Bacteria_ncbi_avg.csv" %}">averages</a></td>
+                    <td><a href="{% static "explore/datasets/Bacteria_ncbi_median.csv" %}">median</a></td>
+                </tr>
+                <tr>
+                    <td>Eukaryota</td>
+                    <td><a href="{% static "explore/datasets/Eukaryota_ncbi_avg.csv" %}">averages</a></td>
+                    <td><a href="{% static "explore/datasets/Eukaryota_ncbi_median.csv" %}">median</a></td>
+                </tr>
+            </table>
+
         </div>
 
     </div>
