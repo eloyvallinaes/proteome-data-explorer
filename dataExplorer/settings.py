@@ -148,4 +148,4 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 if os.environ.get('DJANGO_DEVELOPMENT'):
-    from dev_settings import DEBUG, ALLOWED_HOSTS, SECRET_KEY
+    from .dev_settings import DEBUG, ALLOWED_HOSTS, SECRET_KEY
