@@ -20,7 +20,7 @@ labels = {
               "fNeg": "fraction negative",
               "seqnum": "protein count"
         }
-ranks = ["kingdom","phylum", "taxClass","order","family","genus","species"]
+RANKS = ["kingdom","phylum", "taxClass","order","family","genus","species"]
 palette = sns.color_palette('tab10', 10).as_hex()
 
 
@@ -91,7 +91,7 @@ def find_options(request):
     rank  = data['rank']
     value = data['value']
     myFilter = {rank: value}
-    lowerRank = ranks[ranks.index(rank) + 1]
+    lowerRank = RANKS[RANKS.index(rank) + 1]
     options = set([
                     item.serialize()[lowerRank]
                     for item in Props.objects.filter(**myFilter)
@@ -119,7 +119,8 @@ def taxa_search(request):
     """
     Serve 10 options for taxa searchbox.
     """
-    ranks = ranks.copy().remove("kingdom")
+    ranks = RANKS.copy()
+    ranks.remove("kingdom")
     query = request.GET.get("q")
     p = Props.objects.all()
     allOps = []
