@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Create the chart with gray background scatter
     chart_init();
+    $( "#origin-choose" ).val("ncbi");
+    $( "#x-choose" ).val('ncd1000');
+    $( "#y-choose" ).val('mwkda');
 
 
     // Remove all extra traces except background and make all options available
