@@ -1,10 +1,35 @@
-# Data explorer
+# Proteome physicochemical properties across cellular organisms
 
-In order to complement the results of our paper _Evolutionary cues from physicochemical features of proteomes alone_, this website was built as a tool for any reader to directly explore the data much in the same way as I did during the study.
+As a complement to our paper [_Physicochemical classification of organisms_](https://doi.org/10.1073/pnas.2122957119), this website was built as a tool for any reader to directly explore the data, much in the same way as I did during the study.
+
+The underlying data in `csv` format can be found under the `Downloads` tab.
 
 ## Scope
+### Datasets of cellular organisms
+- UniProt Proteomes (n=10,052).
+- NCBI Assembly (n=17,879).
 
-## Usage
+### Features
+Each takes a value along the following eleven dimensions. In general, these values
+refer to the average over all proteins in a proteome, while the corresponding
+median values can be found under the `Downloads` tab.
+
+| Name | Symbol | Comment |
+|------|--------|---------|
+| Protein length | $l_{sequence}$ | number of residues in protein |
+| Protein count  | $n_{genes}$ | number of proteins in the proteome|
+| Protein size  | $MW$ | the typical molecular weight of proteins in a proteome, in kDa.|
+| Solvent-accessible surface area | $SASA$ | an approximation obtained with Miller's empirical formula: $SASA = 6.3 \cdot MW^{0.73}$; in Å<sup>2</sup>. |
+| Fraction positive | $f_{positive}$ | $(n_R + n_K) / l_{sequence}$ |
+| Fraction negative | $f_{negative}$ | $(n_D + n_E) / l_{sequence}$ |
+| Charged residue fraction | $f_{charged}$ | $(n_D + n_E + n_R + n_K) / l_{sequence}$ |
+| Fraction hydrophobic | $f_{hydrophobic}$ | $(n_F + n_L + n_I + n_V) / l_{sequence}$ |
+| Net charge | $charge_{net}$ | difference between counts of basic (KR) and acidic (DE) residues: $(n_R + n_K) - (n_D + n_E)$.
+| Net charge density | $NCD$ | net charge over SASA: $\frac{charge_{net}}{SASA}$
+| GC content | $GC%$ | genome-wide percentage of guanidine and cytosine nitrogenous bases|
+
+
+
 
 ## Technical notes
 Backend was developed in Django3.7.
@@ -13,40 +38,9 @@ Frontend relies on a single `main.js` and Bootstrap4.0 utilities.
 
 Deployed to Heroku on September 2021.
 
-### Heroku
-Heroku's repo for this project can be cloned using: `heroku git:clone -a proteome-explorer` or **preferably** from https://github.com/eloyvallinaes/proteome-data-explorer.git.
-
-### Database
-While an sqlite3 database was used during development, Heroku doesn't admit static
-databases, so all of the data needed to be migrated to a remote postgresql database.
-This process involved:
-1. Loading data to sqlite3 database; see [`pandas.DataFrame.to_sql`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_sql.html).
-2. Letting Django infer the appropriate models for the data; see [`python3 manage.py inspectdb`](https://docs.djangoproject.com/en/3.2/howto/legacy-databases/).
-3. Dumping the data to a properly formatted fixture with [`django-admin dumpdata`](https://docs.djangoproject.com/en/3.2/ref/django-admin/), preferably excluding additional tables like `contenttypes` or `sessions` if present. For instance:
-```
-python3 manage.py dumpdata --database default --indent 4 -e contenttypes -e auth -e sessions > dataDump.json
-```
-4. Creating a postgresql service at Heroku and connecting app to that database:
-```
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # },
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'denf2r0kqefnt6',
-        'USER': 'fyzcwycdylfviv',
-        'PASSWORD': '5a7786cfa3117aff2feb86e93459170c865c2694e03782fcfa248461a1a1d966',
-        'HOST': 'ec2-54-155-254-112.eu-west-1.compute.amazonaws.com',
-        'PORT': '5432',
-    }
-}
-```
-5. Loading fixture to remote database with `django-admin loaddata`. For a fixture containing 18000+ rows, this takes several minutes; be patient.
-6. Upgrade Heroku postgresql database from hobby-dev to **hobby-basic**, since it contains too many rows for the free plan (limited to 1000). See [updating database](https://devcenter.heroku.com/articles/upgrading-heroku-postgres-databases#upgrading-with-pg-copy).
-
-#### Changing data
-Updates can be issued to database ```Props``` table with ```scripts/load_data.py```. After that, steps 3 and 5 from the above list need to be repeated.
+### Updates
+- May 2022:
+    - bug fixes
+    - data under _Downloads_
+    - _About_
+    - link to publication
