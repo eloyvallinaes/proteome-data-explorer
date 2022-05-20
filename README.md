@@ -10,8 +10,7 @@ The underlying data in `csv` format can be found under the `Downloads` tab.
 - NCBI Assembly (n=17,879).
 
 ### Features
-Each takes a value along the following eleven dimensions. In general, these values
-refer to the average over all proteins in a proteome, while the corresponding
+Each proteome takes a value along the following eleven dimensions. In general, these values refer to the average over all proteins in a proteome, while the corresponding
 median values can be found under the `Downloads` tab.
 
 | Name | Symbol | Comment |
