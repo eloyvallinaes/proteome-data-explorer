@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             $( "a.nav-link").removeClass("active")
             event.target.classList.add("active")
+            $( "#about" ).hide();
             $( "#explorer" ).show();
             $( "#downloads" ).hide();
 
@@ -64,8 +65,21 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             $( "a.nav-link").removeClass("active")
             event.target.classList.add("active")
+            $( "#about" ).hide();
             $( "#explorer" ).hide();
             $( "#downloads" ).show();
+
+        });
+
+    $( "#aboutButton" ).on( 'click',  (event) => {
+            // tweak navigation active state and show/hide divs as required
+            event.preventDefault();
+            $( "a.nav-link").removeClass("active")
+            event.target.classList.add("active")
+            $( "#explorer" ).hide();
+            $( "#downloads" ).hide();
+            $( "#about" ).show();
+
 
         });
 
